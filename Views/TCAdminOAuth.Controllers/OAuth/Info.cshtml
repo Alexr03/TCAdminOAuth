@@ -1,0 +1,155 @@
+﻿@using System.Web.Mvc.Html
+@using TCAdmin.SDK.Web.MVC.Extensions
+@using TCAdminOAuth
+@using TCAdminOAuth.Models
+@model TCAdminOAuth.Configurations.OAuthProviderConfiguration
+
+@{
+    Layout = this.GetTemplateFile("Shared/Main.cshtml", true);
+}
+
+@section sidebar{
+    @Html.Action("_DefaultPageIcons", "Base", new {module = Globals.ModuleId, page = 3})
+}
+
+<p>
+    <img src="https://everything1know.files.wordpress.com/2018/05/sso-logo.png" alt="Running SAML2 SSO sample with WSO2 IS | everything I know" width="336" height="169"/>
+</p>
+<h3>What is it?</h3>
+<p>This module will allow you to setup mutliple 3rd party services that will allow your users to login to TCAdmin by logging in with another service.</p>
+<h3>How to setup</h3>
+<h4>Google (<a href="https://developers.google.com/adwords/api/docs/guides/authentication#webapp">https://developers.google.com/adwords/api/docs/guides/authentication#webapp</a>)</h4>
+<ol>
+    <li>Open the&nbsp;<a href="https://console.developers.google.com/apis/credentials" target="_blank" rel="noopener">Google API Console Credentials page</a>.</li>
+    <li>Click&nbsp;<strong>Select a project</strong>, then&nbsp;<strong>NEW PROJECT</strong>, and enter a name for the project, and optionally, edit the provided project ID. Click&nbsp;<strong>Create</strong>.</li>
+    <li>On the Credentials page, select&nbsp;<strong>Create credentials</strong>, then&nbsp;<strong>OAuth client ID</strong>.</li>
+    <li>You may be prompted to set a product name on the Consent screen; if so, click&nbsp;<strong>Configure consent screen</strong>, supply the requested information, and click&nbsp;<strong>Save</strong>&nbsp;to return to the Credentials screen.</li>
+    <li>
+        Select&nbsp;<strong>Web Application</strong>&nbsp;for the&nbsp;<strong>Application Type</strong>.&nbsp;
+        <ol>
+            <li>
+                In the "<strong>Authorized redirect URIs</strong>" enter these values (modify as required):<br/>
+                <strong>
+                    <a href="@OAuthProviderHelper.RedirectUrl">@OAuthProviderHelper.RedirectUrl</a>
+                </strong>
+            </li>
+        </ol>
+    </li>
+    <li>Click&nbsp;<strong>Create</strong>.</li>
+    <li>On the page that appears, copy the&nbsp;<strong>client ID</strong>&nbsp;and&nbsp;<strong>client secret</strong>&nbsp;to the <a href="?provider=Google">Google OAuth</a> Settings on the left menu and enable.</li>
+    <li>
+        <strong>Done!</strong>
+    </li>
+</ol>
+<hr/>
+<h4>
+    <strong>WHMCS (<a href="https://docs.whmcs.com/OpenID_Connect#Generating_Credentials">https://docs.whmcs.com/OpenID_Connect#Generating_Credentials</a>)</strong>
+</h4>
+<ol>
+    <li>Navigate to&nbsp;<strong>Configuration &gt; System Settings &gt; OpenID Connect</strong>&nbsp;or, prior to WHMCS 8.0,&nbsp;<strong>Setup &gt; OpenID Connect</strong>.</li>
+    <li>Click the&nbsp;<strong>Generate New Client API Credentials</strong>&nbsp;button</li>
+    <li>
+        Enter the information requested:
+        <ol>
+            <li>
+                In the "<strong>Authorized Redirect URIs</strong>" enter:&nbsp;<br/>
+                <strong>
+                    <a href="@OAuthProviderHelper.RedirectUrl">@OAuthProviderHelper.RedirectUrl</a>
+                </strong>
+            </li>
+        </ol>
+    </li>
+    <li>Click the&nbsp;<strong>Generate Credentials</strong>&nbsp;button to create your application's OAuth 2.0 credentials</li>
+    <li>Upon re-load, look for the&nbsp;<strong>Client ID</strong>&nbsp;and&nbsp;<strong>Client Secret</strong>&nbsp;in the Client API Credentials section and place these inside of the <a href="?provider=WHMCS">WHMCS OAuth</a> Settings on the left menu and enable.</li>
+    <li>
+        <strong>Done!</strong>
+    </li>
+</ol>
+<hr/>
+<h4>Discord (<a href="https://discord.com/developers/applications">https://discord.com/developers/applications</a>)</h4>
+<ol>
+    <li>Head to&nbsp;<a href="https://discord.com/developers/applications">https://discord.com/developers/applications</a>&nbsp;and click "<strong>New Application</strong>" in the top right.</li>
+    <li>Enter a name in the dialog shown (This will be shown to users when they login)</li>
+    <li>
+        When you are redirected to the new application page:
+        <ol>
+            <li>Click "<strong>OAuth</strong>" on the left sidebar</li>
+            <li>
+                In "<strong>Redirects</strong>" enter these values (modify as required):<br/>
+                <strong>
+                    <a href="@OAuthProviderHelper.RedirectUrl">@OAuthProviderHelper.RedirectUrl</a>
+                </strong>
+            </li>
+            <li>Click "<strong>General Information</strong>" on the left sidebar.</li>
+            <li>Copy "<strong>Client ID</strong>" &amp; "<strong>Client Secret</strong>" and copy these to the&nbsp;<a href="?provider=Discord">Discord OAuth</a>&nbsp;Settings on the left menu and enable.</li>
+        </ol>
+    </li>
+    <li>
+        <strong>Done!</strong>
+    </li>
+</ol>
+<hr/>
+<h4>
+    <strong>Github (<a href="https://docs.github.com/en/developers/apps/creating-an-oauth-app">https://docs.github.com/en/developers/apps/creating-an-oauth-app</a>)</strong>
+</h4>
+<ol>
+    <li>In the upper-right corner of any page, click your profile photo, then click&nbsp;<strong>Settings.</strong></li>
+    <li>In the left sidebar, click&nbsp;<strong>Developer settings</strong>.</li>
+    <li>In the left sidebar, click&nbsp;<strong>OAuth Apps</strong>.</li>
+    <li>
+        Click&nbsp;<strong>New OAuth App</strong>.
+        <div class="extended-markdown note border rounded-1 mb-4 p-3 border-blue bg-blue-light f5"><strong>Note:</strong>&nbsp;If you haven't created an app before, this button will say,&nbsp;<strong>Register a new application</strong>.</div>
+    </li>
+    <li>In "<strong>Application name</strong>", type the "TCAdmin".</li>
+    <li>
+        In "<strong>Homepage URL</strong>", type the full URL to your TCAdmin Control Panel&nbsp;
+        <ol>
+            <li>Optionally, in "<strong>Application description</strong>", type a description of your app that users will see. E.G. SSO to TCAdmin</li>
+        </ol>
+    </li>
+    <li>
+        In "<strong>Authorization callback URL</strong>", type:<br/>
+        <strong>
+            <a href="@OAuthProviderHelper.RedirectUrl">@OAuthProviderHelper.RedirectUrl</a>
+        </strong>
+    </li>
+    <li>Click&nbsp;<strong>Register application</strong>.</li>
+    <li>Copy "<strong>Client ID</strong>" &amp; "<strong>Client Secret</strong>" and copy these to the <a href="?provider=Github">Github OAuth</a> Settings on the left menu and enable.</li>
+    <li>
+        <strong>Done!</strong>
+    </li>
+</ol>
+<hr/>
+<h4>Facebook (<a href="https://developers.facebook.com/docs/facebook-login/web/">https://developers.facebook.com/docs/facebook-login/web</a>)</h4>
+<ol>
+    <li>
+        Goto&nbsp;<a href="https://developers.facebook.com/apps/">https://developers.facebook.com/apps/</a>
+        <ol>
+            <li>Click "<strong>Add a new app</strong>"</li>
+            <li>Click "<strong>For everything else</strong>"</li>
+            <li>Fill in the information as required.</li>
+        </ol>
+    </li>
+    <li>
+        Add the "<strong>Facebook Login</strong>" product to the app.
+        <ol>
+            <li>Click "<strong>Settings</strong>" and ensure "<strong>Client OAuth Login</strong>" is enabled.</li>
+            <li>
+                Under "<strong>Valid OAuth Redirect URIs</strong>" type:<br/>
+                <strong>
+                    <a href="@OAuthProviderHelper.RedirectUrl">@OAuthProviderHelper.RedirectUrl</a>
+                </strong>
+            </li>
+        </ol>
+    </li>
+    <li>
+        On the left menu, click "<strong>Settings</strong>" under dashboard
+        <ol>
+            <li>Click "<strong>Basic</strong>"</li>
+            <li>Copy "<strong>App&nbsp;ID</strong>" &amp; "<strong>App Secret</strong>" and copy these to the <a href="?provider=Facebook">Facebook OAuth</a> Settings on the left menu and enable.</li>
+        </ol>
+    </li>
+    <li>
+        <strong>Done!</strong>
+    </li>
+</ol>

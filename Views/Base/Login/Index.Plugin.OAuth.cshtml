@@ -1,0 +1,37 @@
+﻿@using TCAdminOAuth.Models
+
+@{
+    var isOAuthError = Request["OAuthError"] != null;
+}
+
+<script>
+@if (isOAuthError)
+{
+    <text>
+        $(document).ready(function() {
+            TCAdmin.Ajax.ShowBasicDialog('OAuth Login', '@Request["OAuthError"]')
+        });
+    </text>
+}
+
+    const recoverSection = document.getElementsByClassName("recover")[0].parentNode;
+    let socialsDiv = document.createElement("div");
+    
+    socialsDiv.innerHTML = `
+    <hr />
+    <h4>Sign in with...</h4>
+    @foreach (var providerName in Enum.GetNames(typeof(OAuthProvider)))
+    {
+        var provider = providerName.ParseToProviderEnum();
+        if (provider.ToBase().GetConfiguration().Enabled)
+        {
+            <text>
+                <a href="/OAuth/Login?provider=@provider">
+                    <img src="/Views/Default/TCAdminOAuth.Controllers/Images/@(providerName)_signin.png" width="191px" alt="Login with @provider">
+                </a>
+         </text>
+        }
+    }
+    `
+    recoverSection.append(socialsDiv);
+</script>

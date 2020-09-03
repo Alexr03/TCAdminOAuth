@@ -1,0 +1,48 @@
+﻿@using System.Web.Mvc.Ajax
+@using System.Web.Mvc.Html
+@using Kendo.Mvc.UI
+@using TCAdmin.SDK.Web.MVC.Extensions
+@using TCAdminOAuth
+@model TCAdminOAuth.Configurations.OAuthProviderConfiguration
+
+@{
+    Layout = this.GetTemplateFile("Shared/Main.cshtml", true);
+}
+
+@section sidebar{
+    @Html.Action("_DefaultPageIcons", "Base", new { module = Globals.ModuleId, page = 3 })
+}
+
+@using (Ajax.BeginForm("Edit", "OAuth", new AjaxOptions {OnComplete = "TCAdmin.Ajax.ShowBasicDialog('Success', 'Successfully saved OAuth Settings')"}))
+{
+    @Html.AntiForgeryToken()
+    <div class="primary-toolbar">
+        @(Html.Kendo().ToolBar()
+            .Name("generalToolBar")
+            .Items(items =>
+            {
+                items.Add().Template(this.GetToolbarButton(Resources.Global.Save, "save"));
+                items.Add().Type(CommandType.Button).Icon("cancel").Text(Resources.Global.Cancel).Click("TCAdmin.Ajax.CancelClicked");
+            }))
+    </div>
+
+    <div class="primary-content">
+        <fieldset class="fieldset-form auto-focus">
+            @Html.ValidationSummary(true)
+            @Html.Hidden("Provider", Request["provider"])
+            <h2>Edit @Request["provider"] Settings</h2>
+            <ul>
+                <li>
+                    <dl>
+                        <dt>@Html.LabelFor(m => m.Enabled)</dt>
+                        <dd>@Html.Kendo().SwitchFor(m => m.Enabled)@Html.ValidationMessageFor(m => m.Enabled)@Html.TooltipFor(m => m.Enabled)</dd>
+                        <dt>@Html.LabelFor(m => m.ClientId)</dt>
+                        <dd>@Html.Kendo().TextBoxFor(m => m.ClientId)@Html.ValidationMessageFor(m => m.ClientId)@Html.TooltipFor(m => m.ClientId)</dd>
+                        <dt>@Html.LabelFor(m => m.ClientSecret)</dt>
+                        <dd>@Html.Kendo().TextBoxFor(m => m.ClientSecret).HtmlAttributes(new {type = "password"})@Html.ValidationMessageFor(m => m.ClientSecret)@Html.TooltipFor(m => m.ClientSecret)</dd>
+                    </dl>
+                </li>
+            </ul>
+        </fieldset>
+    </div>
+}

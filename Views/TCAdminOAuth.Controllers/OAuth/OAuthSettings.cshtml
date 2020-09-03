@@ -1,0 +1,43 @@
+﻿@using System.Web.Mvc.Ajax
+@using System.Web.Mvc.Html
+@using Kendo.Mvc.UI
+@using TCAdmin.SDK.Web.MVC.Extensions
+@using TCAdminOAuth
+@model TCAdminOAuth.Configurations.GlobalOAuthSettings
+
+@{
+    Layout = this.GetTemplateFile("Shared/Main.cshtml", true);
+}
+
+@section sidebar{
+    @Html.Action("_DefaultPageIcons", "Base", new { module = Globals.ModuleId, page = 3 })
+}
+
+@using (Ajax.BeginForm("OAuthSettings", "OAuth", new AjaxOptions {OnComplete = "TCAdmin.Ajax.ShowBasicDialog('Success', 'Successfully saved OAuth Settings')"}))
+{
+    @Html.AntiForgeryToken()
+    <div class="primary-toolbar">
+        @(Html.Kendo().ToolBar()
+            .Name("generalToolBar")
+            .Items(items =>
+            {
+                items.Add().Template(this.GetToolbarButton(Resources.Global.Save, "save"));
+                items.Add().Type(CommandType.Button).Icon("cancel").Text(Resources.Global.Cancel).Click("TCAdmin.Ajax.CancelClicked");
+            }))
+    </div>
+
+    <div class="primary-content">
+        <fieldset class="fieldset-form auto-focus">
+            @Html.ValidationSummary(true)
+            <h2>Edit OAuth Settings</h2>
+            <ul>
+                <li>
+                    <dl>
+                        <dt>@Html.LabelFor(m => m.EnableEmailAuth)</dt>
+                        <dd>@Html.Kendo().SwitchFor(m => m.EnableEmailAuth)@Html.ValidationMessageFor(m => m.EnableEmailAuth)@Html.TooltipFor(m => m.EnableEmailAuth)</dd>
+                    </dl>
+                </li>
+            </ul>
+        </fieldset>
+    </div>
+}

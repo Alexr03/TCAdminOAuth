@@ -1,0 +1,55 @@
+﻿@using TCAdmin.SDK.Mail
+@using TCAdminOAuth.Models
+@{
+    var companyInfo = new CompanyInfo(2);
+}
+
+<div class="cards-container">
+    @foreach (var providerName in Enum.GetNames(typeof(OAuthProvider)))
+    {
+        var provider = providerName.ParseToProviderEnum();
+        if (!provider.ToBase().GetConfiguration().Enabled)
+        {
+            continue;
+        }
+        <text>
+            <div class="k-card">
+                <div class="k-card-header">
+                    <h5 class="k-card-title">@providerName</h5>
+                </div>
+                <img class="k-card-image" src="/Views/Default/TCAdminOAuth.Controllers/Images/@(providerName)_banner.png"/>
+                <div class="k-card-body">
+                    <p>Link your <strong>@providerName</strong> and <strong>@companyInfo.CompanyName</strong> together!</p>
+                </div>
+                <div class="k-card-actions k-card-actions-stretched">
+                    @if (provider.CurrentUserIsSynced())
+                    {
+                        <span class="k-card-action">
+                            <a href="@Url.Action("Unlink", "OAuth", new {provider}, "https")" class="k-button k-flat k-primary">Unlink</a>
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="k-card-action">
+                            <a href="@Url.Action("Login", "OAuth", new {provider}, "https")" class="k-button k-flat k-primary">Link</a>
+                        </span>
+                    }
+                </div>
+            </div>
+        </text>
+    }
+
+</div>
+
+<style>
+    .cards-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: left;
+    }
+    
+    .k-card {
+        width: 285px;
+        margin: 2%;
+    }
+</style>

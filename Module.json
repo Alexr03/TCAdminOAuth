@@ -1,0 +1,14 @@
+﻿{
+  "MinimumTcAdminVersion": "2.0.154.0",
+  "SqlProfiles": {
+    "InstallSql": "install.sql",
+    "UpdateSql": "update.sql",
+    "UninstallSql": "uninstall.sql"
+  },
+  "Dll": "TCAdminOAuth.dll",
+  "MasterOnly": true,
+  "Dependencies": [
+    "RestSharp.dll",
+    "OAuth2.dll"
+  ]
+}

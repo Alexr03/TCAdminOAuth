@@ -1,0 +1,21 @@
+﻿@using System.Web.Mvc.Html
+@{
+    var gotoSso = bool.Parse(Request["sso"] ?? "false").ToString().ToLower();
+}
+
+<script>
+    let tabStrip = $("#tabstrip").kendoTabStrip().data("kendoTabStrip");
+    tabStrip.insertAfter(
+        [
+            {
+                text: "Single Sign On",
+                content: `@Html.Partial("_OAuthProviders")`
+            }
+        ],
+        tabStrip.tabGroup.children().eq(1)
+    );
+    
+    if(@gotoSso){
+        tabStrip.select(2);
+    }
+</script>
