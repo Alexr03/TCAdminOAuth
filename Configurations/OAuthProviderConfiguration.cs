@@ -43,6 +43,7 @@ namespace TCAdminOAuth.Configurations
             Enabled = model.Enabled;
             ClientId = model.ClientId;
             ClientSecret = model.ClientSecret;
+            BaseUrl = model.BaseUrl;
         }
     }
 }
