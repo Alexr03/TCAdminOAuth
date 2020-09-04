@@ -17,6 +17,9 @@ namespace TCAdminOAuth.Configurations
         [Display(Name = "Client Secret", Description = "The Client Secret you get from the provider.")]
         public string ClientSecret { get; set; } = "";
 
+        [Display(Name = "Base URL", Description = "Override the default Base URL for the OAuth provider.")]
+        public string BaseUrl { get; set; } = "";
+
         public static OAuthProviderConfiguration GetConfiguration(OAuthProvider provider)
         {
             var credentialsConfiguration =

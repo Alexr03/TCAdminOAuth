@@ -1,7 +1,7 @@
 ﻿@using TCAdmin.SDK.Mail
 @using TCAdminOAuth.Models
 @{
-    var companyInfo = new CompanyInfo(2);
+    var companyInfo = new CompanyInfo();
 }
 
 <div class="cards-container">
@@ -25,13 +25,13 @@
                     @if (provider.CurrentUserIsSynced())
                     {
                         <span class="k-card-action">
-                            <a href="@Url.Action("Unlink", "OAuth", new {provider}, "https")" class="k-button k-flat k-primary">Unlink</a>
+                            <a href="/OAuth/Unlink?provider=@providerName" class="k-button k-flat k-primary">Unlink</a>
                         </span>
                     }
                     else
                     {
                         <span class="k-card-action">
-                            <a href="@Url.Action("Login", "OAuth", new {provider}, "https")" class="k-button k-flat k-primary">Link</a>
+                            <a href="/OAuth/Login?provider=@providerName" class="k-button k-flat k-primary">Link</a>
                         </span>
                     }
                 </div>

@@ -5,11 +5,15 @@ using OAuth2.Configuration;
 using OAuth2.Infrastructure;
 using OAuth2.Models;
 using RestSharp;
+using TCAdminOAuth.Configurations;
+using TCAdminOAuth.Models;
 
 namespace TCAdminOAuth.Impl
 {
     public class WhmcsClient : OAuth2Client
     {
+        private readonly OAuthProviderConfiguration _configuration = OAuthProviderConfiguration.GetConfiguration(OAuthProvider.Whmcs);
+        
         public WhmcsClient(IRequestFactory factory, IClientConfiguration configuration) : base(factory, configuration)
         {
         }
@@ -45,21 +49,21 @@ namespace TCAdminOAuth.Impl
         protected override Endpoint AccessTokenServiceEndpoint =>
             new Endpoint
             {
-                BaseUri = "https://billing.lyhmehosting.com",
+                BaseUri = _configuration.BaseUrl,
                 Resource = "/oauth/token.php"
             };
 
         protected override Endpoint AccessCodeServiceEndpoint =>
             new Endpoint
             {
-                BaseUri = "https://billing.lyhmehosting.com",
+                BaseUri = _configuration.BaseUrl,
                 Resource = "/oauth/authorize.php"
             };
 
         protected override Endpoint UserInfoServiceEndpoint =>
             new Endpoint
             {
-                BaseUri = "https://billing.lyhmehosting.com",
+                BaseUri = _configuration.BaseUrl,
                 Resource = "/oauth/userinfo.php"
             };
     }

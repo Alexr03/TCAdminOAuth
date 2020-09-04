@@ -13,7 +13,7 @@
     @Html.Action("_DefaultPageIcons", "Base", new { module = Globals.ModuleId, page = 3 })
 }
 
-@using (Ajax.BeginForm("Edit", "OAuth", new AjaxOptions {OnComplete = "TCAdmin.Ajax.ShowBasicDialog('Success', 'Successfully saved OAuth Settings')"}))
+@using (Ajax.BeginForm("Edit", "OAuth", new AjaxOptions {OnSuccess = "TCAdmin.Ajax.HandleAjaxResult", OnFailure = "onFailure"}))
 {
     @Html.AntiForgeryToken()
     <div class="primary-toolbar">
@@ -33,6 +33,7 @@
             <h2>Edit @Request["provider"] Settings</h2>
             <ul>
                 <li>
+                    <h3>OAuth Settings</h3>
                     <dl>
                         <dt>@Html.LabelFor(m => m.Enabled)</dt>
                         <dd>@Html.Kendo().SwitchFor(m => m.Enabled)@Html.ValidationMessageFor(m => m.Enabled)@Html.TooltipFor(m => m.Enabled)</dd>
@@ -42,7 +43,20 @@
                         <dd>@Html.Kendo().TextBoxFor(m => m.ClientSecret).HtmlAttributes(new {type = "password"})@Html.ValidationMessageFor(m => m.ClientSecret)@Html.TooltipFor(m => m.ClientSecret)</dd>
                     </dl>
                 </li>
+                <li>
+                    <h3 id="overrides">Overrides @Html.Kendo().Tooltip().For("#overrides").Content("For Advanced Users")</h3>
+                    <dl>
+                        <dt>@Html.LabelFor(m => m.BaseUrl)</dt>
+                        <dd>@Html.Kendo().TextBoxFor(m => m.BaseUrl)@Html.ValidationMessageFor(m => m.BaseUrl)@Html.TooltipFor(m => m.BaseUrl)</dd>
+                    </dl>
+                </li>
             </ul>
         </fieldset>
     </div>
 }
+
+<script>
+    function onFailure(e){
+        TCAdmin.Ajax.ShowBasicDialog('OAuth Failure', e.responseJSON.Message)
+    }
+</script>

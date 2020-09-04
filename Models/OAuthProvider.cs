@@ -3,6 +3,7 @@ using System.Web;
 using System.Web.Mvc;
 using OAuth2.Client;
 using OAuth2.Models;
+using TCAdmin.SDK.Mail;
 using TCAdmin.SDK.Objects;
 using TCAdminOAuth.Configurations;
 using TCAdminOAuth.Configurations.OAuths;
@@ -21,8 +22,7 @@ namespace TCAdminOAuth.Models
     public static class OAuthProviderHelper
     {
         public static readonly string RedirectUrl =
-            new Uri(new UrlHelper(HttpContext.Current.Request.RequestContext).Action("Callback", "OAuth", new { },
-                "https") ?? "").ToString();
+            new Uri($"{new CompanyInfo().ControlPanelUrl}/OAuth/Callback").ToString();
 
         public static OAuthProvider ParseToProviderEnum(this string provider)
         {

@@ -4,8 +4,10 @@ using System.Collections.Specialized;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
+using Base;
 using OAuth2.Client;
 using OAuth2.Models;
 using TCAdmin.SDK.Objects;
@@ -37,10 +39,21 @@ namespace TCAdminOAuth.Controllers
         [HttpPost]
         public ActionResult Edit(OAuthProvider provider, OAuthProviderConfiguration model)
         {
+            if (model.ClientId.Contains("+"))
+            {
+                Response.StatusCode = 400;
+                return Json(new
+                {
+                    Message = "Please regenerate your OAuth Credentials where 'Client ID' does not contain '+'"
+                });
+            }
             var config = provider.ToBase().GetConfiguration();
             config.UpdateWith(model);
             config.Save();
-            return View(config);
+            return Json(new
+            {
+                Message = "OAuth Settings successfully saved."
+            });
         }
         
         [HttpGet]
@@ -83,8 +96,9 @@ namespace TCAdminOAuth.Controllers
             };
             Console.WriteLine(oAuthRequestState.RequestLoginState);
             OAuthRequests.Add(guid, oAuthRequestState);
-
-            return Redirect(await client.GetLoginLinkUriAsync(guid.ToString()));
+            
+            var redirectUri = new Uri(await client.GetLoginLinkUriAsync(guid.ToString()));
+            return Redirect(redirectUri.ToString());
         }
 
         public async Task<ActionResult> Callback()
