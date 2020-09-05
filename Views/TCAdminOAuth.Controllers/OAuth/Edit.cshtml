@@ -3,6 +3,7 @@
 @using Kendo.Mvc.UI
 @using TCAdmin.SDK.Web.MVC.Extensions
 @using TCAdminOAuth
+@using TCAdminOAuth.Models
 @model TCAdminOAuth.Configurations.OAuthProviderConfiguration
 
 @{
@@ -43,13 +44,16 @@
                         <dd>@Html.Kendo().TextBoxFor(m => m.ClientSecret).HtmlAttributes(new {type = "password"})@Html.ValidationMessageFor(m => m.ClientSecret)@Html.TooltipFor(m => m.ClientSecret)</dd>
                     </dl>
                 </li>
-                <li>
-                    <h3 id="overrides">Overrides @Html.Kendo().Tooltip().For("#overrides").Content("For Advanced Users")</h3>
-                    <dl>
-                        <dt>@Html.LabelFor(m => m.BaseUrl)</dt>
-                        <dd>@Html.Kendo().TextBoxFor(m => m.BaseUrl)@Html.ValidationMessageFor(m => m.BaseUrl)@Html.TooltipFor(m => m.BaseUrl)</dd>
-                    </dl>
-                </li>
+                @if (Model._provider == OAuthProvider.Whmcs)
+                {
+                    <li>
+                        <h3 id="overrides">Overrides @Html.Kendo().Tooltip().For("#overrides").Content("For Advanced Users")</h3>
+                        <dl>
+                            <dt>@Html.LabelFor(m => m.BaseUrl)</dt>
+                            <dd>@Html.Kendo().TextBoxFor(m => m.BaseUrl)@Html.ValidationMessageFor(m => m.BaseUrl)@Html.TooltipFor(m => m.BaseUrl)</dd>
+                        </dl>
+                    </li>
+                }
             </ul>
         </fieldset>
     </div>

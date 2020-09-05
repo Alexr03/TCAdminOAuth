@@ -6,7 +6,7 @@ namespace TCAdminOAuth.Configurations
 {
     public class OAuthProviderConfiguration
     {
-        private OAuthProvider _provider;
+        public OAuthProvider _provider;
         
         [Display(Name = "Enable this OAuth Provider", Description = "Enabling this will allow users to login with this provider.")]
         public bool Enabled { get; set; }
