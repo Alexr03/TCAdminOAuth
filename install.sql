@@ -76,6 +76,18 @@ VALUES (7, '57d6df06-41b6-4b76-800c-e446eed1bbad', 3, 3, '57d6df06-41b6-4b76-800
 # ----------------------------------------------------------------------------------------------------------------------
 
 INSERT INTO tc_panelbar_categories (category_id, module_id, display_name, view_order, parent_category_id,
-                                            parent_module_id, page_id, panelbar_icon)
+                                    parent_module_id, page_id, panelbar_icon)
 VALUES (1, '57d6df06-41b6-4b76-800c-e446eed1bbad', 'OAuth', 1002, 6, '07405876-e8c2-4b24-a774-4ef57f596384', null,
         null);
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+INSERT INTO tc_permission_categories (category_id, module_id, parent_category_id, parent_module_id, display_name,
+                                      view_order)
+VALUES (1, '57d6df06-41b6-4b76-800c-e446eed1bbad', null, null, 'OAuth Credentials', 1060);
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+INSERT INTO tc_permissions (permission_id, module_id, category_id, display_name, permission_type, view_order,
+                                    role_owner_required_permissions, same_role_required_permissions, top_level_only)
+VALUES (1, '57d6df06-41b6-4b76-800c-e446eed1bbad', 1, 'Modify OAuth Credentials', 1, 1000, '', null, 1);
