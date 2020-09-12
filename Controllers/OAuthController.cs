@@ -126,16 +126,7 @@ namespace TCAdminOAuth.Controllers
                 switch (request.RequestLoginState)
                 {
                     case OAuthRequestLoginState.Login:
-                        if (LoginUser(userInfo))
-                        {
-                            return Redirect("/");
-                        }
-                        else
-                        {
-                            return RedirectWithOAuthError();
-                        }
-
-                        break;
+                        return LoginUser(userInfo) ? Redirect("/") : RedirectWithOAuthError();
                     case OAuthRequestLoginState.Link:
                         provider.SyncUser(userInfo, new User(request.UserId));
                         return Redirect("/AccountSecurity?sso=true");
@@ -201,14 +192,17 @@ namespace TCAdminOAuth.Controllers
             if (config.EnableEmailAuth)
             {
                 var users = TCAdmin.SDK.Objects.User.GetUsersByEmail(userInfo.Email).Cast<User>().ToList();
-                if (users.Count == 0)
+                switch (users.Count)
                 {
-                    SetOAuthError("There are no accounts with this email. Disallowing OAuth Login.");
-                    return null;
+                    case 0:
+                        SetOAuthError("There are no accounts with this email. Disallowing OAuth Login.");
+                        return null;
+                    case 1:
+                        return users[0];
+                    default:
+                        SetOAuthError("There is more than one user with this email address. Disallowing OAuth Login.");
+                        break;
                 }
-
-                if (users.Count == 1) return users[0];
-                SetOAuthError("There is more than one user with this email address. Disallowing OAuth Login.");
             }
             else
             {
@@ -220,11 +214,10 @@ namespace TCAdminOAuth.Controllers
 
         private ActionResult RedirectWithOAuthError()
         {
-            var queryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
-
+            var queryString = HttpUtility.ParseQueryString(string.Empty);
             queryString.Add("OAuthError", TempData["OAuthError"].ToString());
 
-            return Redirect("/Login?" + queryString.ToString());
+            return Redirect("/Login?" + queryString);
         }
 
         private void SetOAuthError(string error)
