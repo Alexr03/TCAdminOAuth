@@ -13,8 +13,7 @@
             TCAdmin.Ajax.ShowBasicDialog('OAuth Login', '@Request["OAuthError"]')
         });
     </text>
-}
-
+} 
     const recoverSection = document.getElementsByClassName("recover")[0].parentNode;
     let socialsDiv = document.createElement("div");
     
@@ -26,7 +25,6 @@
         ObjectBase.GlobalSkipSecurityCheck = true;
         foreach (var providerName in Enum.GetNames(typeof(OAuthProvider)))
         {
-            //here
             var provider = providerName.ParseToProviderEnum();
             if (provider.ToBase().GetConfiguration().Enabled)
             {
