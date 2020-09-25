@@ -94,7 +94,6 @@ namespace TCAdminOAuth.Controllers
                     : OAuthRequestLoginState.Login,
                 UserId = TCAdmin.SDK.Session.IsAuthenticated() ? TCAdmin.SDK.Session.GetCurrentUser().UserId : -1
             };
-            Console.WriteLine(oAuthRequestState.RequestLoginState);
             OAuthRequests.Add(guid, oAuthRequestState);
             
             var redirectUri = new Uri(await client.GetLoginLinkUriAsync(guid.ToString()));
