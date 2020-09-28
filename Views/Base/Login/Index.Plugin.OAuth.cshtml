@@ -1,4 +1,5 @@
 ﻿@using TCAdmin.SDK.Objects
+@using TCAdminOAuth.Configurations
 @using TCAdminOAuth.Models
 
 @{
@@ -23,17 +24,11 @@
     @try
     {
         ObjectBase.GlobalSkipSecurityCheck = true;
-        foreach (var providerName in Enum.GetNames(typeof(OAuthProvider)))
+        foreach (var provider in OAuthProvider.GetAll().Where(provider => !provider.Configuration.GetConfiguration<OAuthProviderConfiguration>().Enabled))
         {
-            var provider = providerName.ParseToProviderEnum();
-            if (provider.ToBase().GetConfiguration().Enabled)
-            {
-                <text>
-                <a href="/OAuth/Login?provider=@provider">
-                    <img src="/Views/Default/TCAdminOAuth.Controllers/Images/@(providerName)_signin.png" width="191px" alt="Login with @provider">
-                </a>
-         </text>
-            }
+            <a href="/OAuth/Login?provider=@provider.Name">
+                <img src="/Views/Default/TCAdminOAuth.Controllers/Images/@(provider.Name.ToLower())_signin.png" width="190px" alt="Login with @provider">
+            </a>
         }
     }
     finally

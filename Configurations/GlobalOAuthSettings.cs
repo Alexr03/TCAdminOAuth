@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Alexr03.Common.TCAdmin.Configuration;
 
 namespace TCAdminOAuth.Configurations
 {
@@ -12,13 +13,15 @@ namespace TCAdminOAuth.Configurations
         public static GlobalOAuthSettings GetConfiguration()
         {
             var credentialsConfiguration =
-                ConfigurationHelper.GetConfiguration<GlobalOAuthSettings>($"OAuth.Global.Settings");
+                new DatabaseConfiguration<GlobalOAuthSettings>(Globals.ModuleId, nameof(GlobalOAuthSettings))
+                    .GetConfiguration();
             return credentialsConfiguration;
         }
 
         public void SetConfiguration(GlobalOAuthSettings model)
         {
-            ConfigurationHelper.SetConfiguration($"OAuth.Global.Settings", model);
+            new DatabaseConfiguration<GlobalOAuthSettings>(Globals.ModuleId, nameof(GlobalOAuthSettings))
+                .SetConfiguration(model);
         }
 
         public void Save()

@@ -4,14 +4,14 @@
 @using TCAdmin.SDK.Web.MVC.Extensions
 @using TCAdminOAuth
 @using TCAdminOAuth.Models
-@model TCAdminOAuth.Configurations.OAuthProviderConfiguration
+@model TCAdminOAuth.Configurations.WhmcsProviderConfiguration
 
 @{
     Layout = this.GetTemplateFile("Shared/Main.cshtml", true);
 }
 
 @section sidebar{
-    @Html.Action("_DefaultPageIcons", "Base", new { module = Globals.ModuleId, page = 3 })
+    @Html.Action("_DefaultPageIcons", "Base", new {module = Globals.ModuleId, page = 3})
 }
 
 @using (Ajax.BeginForm("Edit", "OAuth", new AjaxOptions {OnSuccess = "TCAdmin.Ajax.HandleAjaxResult", OnFailure = "onFailure"}))
@@ -42,6 +42,13 @@
                         <dd>@Html.Kendo().TextBoxFor(m => m.ClientId)@Html.ValidationMessageFor(m => m.ClientId)@Html.TooltipFor(m => m.ClientId)</dd>
                         <dt>@Html.LabelFor(m => m.ClientSecret)</dt>
                         <dd>@Html.Kendo().TextBoxFor(m => m.ClientSecret).HtmlAttributes(new {type = "password"})@Html.ValidationMessageFor(m => m.ClientSecret)@Html.TooltipFor(m => m.ClientSecret)</dd>
+                    </dl>
+                </li>
+                <li>
+                    <h3 id="overrides">Overrides @Html.Kendo().Tooltip().For("#overrides").Content("For Advanced Users")</h3>
+                    <dl>
+                        <dt>@Html.LabelFor(m => m.BaseUrl)</dt>
+                        <dd>@Html.Kendo().TextBoxFor(m => m.BaseUrl)@Html.ValidationMessageFor(m => m.BaseUrl)@Html.TooltipFor(m => m.BaseUrl)</dd>
                     </dl>
                 </li>
             </ul>

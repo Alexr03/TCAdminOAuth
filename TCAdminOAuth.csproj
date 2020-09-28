@@ -44,20 +44,21 @@
         <HintPath>..\packages\MySql.Data.6.7.9\lib\net45\MySql.Data.dll</HintPath>
         <Private>True</Private>
       </Reference>
-      <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
-        <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
+        <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
         <Private>True</Private>
       </Reference>
-      <Reference Include="OAuth2, Version=0.9.13.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\packages\OAuth2.0.9.13-pre\lib\netstandard2.0\OAuth2.dll</HintPath>
+      <Reference Include="OAuth2, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\packages\OAuth2.0.10.0\lib\netstandard2.0\OAuth2.dll</HintPath>
         <Private>True</Private>
       </Reference>
-      <Reference Include="RestSharp, Version=106.5.4.0, Culture=neutral, PublicKeyToken=598062e77f915f75">
-        <HintPath>..\packages\RestSharp.106.5.4\lib\net452\RestSharp.dll</HintPath>
+      <Reference Include="RestSharp, Version=106.11.4.0, Culture=neutral, PublicKeyToken=598062e77f915f75">
+        <HintPath>..\packages\RestSharp.106.11.4\lib\net452\RestSharp.dll</HintPath>
         <Private>True</Private>
       </Reference>
       <Reference Include="System" />
       <Reference Include="System.ComponentModel.DataAnnotations" />
+      <Reference Include="System.Data" />
       <Reference Include="System.Web" />
       <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
         <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.Helpers.dll</HintPath>
@@ -196,7 +197,6 @@
       <None Include="packages.config" />
     </ItemGroup>
     <ItemGroup>
-      <Compile Include="Configurations\ConfigurationHelper.cs" />
       <Compile Include="Configurations\GlobalOAuthSettings.cs" />
       <Compile Include="Configurations\OAuthBase.cs" />
       <Compile Include="Configurations\OAuthProviderConfiguration.cs" />
@@ -205,6 +205,7 @@
       <Compile Include="Configurations\OAuths\GithubOAuth.cs" />
       <Compile Include="Configurations\OAuths\GoogleOAuth.cs" />
       <Compile Include="Configurations\OAuths\WhmcsOAuth.cs" />
+      <Compile Include="Configurations\WhmcsProviderConfiguration.cs" />
       <Compile Include="Controllers\OAuthController.cs" />
       <Compile Include="Globals.cs" />
       <Compile Include="Impl\DiscordClient.cs" />
@@ -231,12 +232,19 @@
       <Content Include="Views\TCAdminOAuth.Controllers\Images\whmcs_banner.png" />
       <Content Include="Views\TCAdminOAuth.Controllers\Images\whmcs_signin.png" />
       <Content Include="Views\TCAdminOAuth.Controllers\OAuth\Edit.cshtml" />
+      <Content Include="Views\TCAdminOAuth.Controllers\OAuth\EditWhmcs.cshtml" />
       <Content Include="Views\TCAdminOAuth.Controllers\OAuth\Info.cshtml" />
       <Content Include="Views\TCAdminOAuth.Controllers\OAuth\OAuthSettings.cshtml" />
     </ItemGroup>
     <ItemGroup>
       <Analyzer Include="..\packages\MappingGenerator.1.17.437\analyzers\dotnet\cs\MappingGenerator.dll" />
       <Analyzer Include="..\packages\MappingGenerator.1.17.437\analyzers\dotnet\cs\Pluralize.NET.dll" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\Alexr03.Common\Alexr03.Common.csproj">
+        <Project>{f51453a6-0fef-4649-b1a4-57647de4a9df}</Project>
+        <Name>Alexr03.Common</Name>
+      </ProjectReference>
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

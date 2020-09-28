@@ -7,14 +7,9 @@ namespace TCAdminOAuth.Configurations.OAuths
 {
     public class GithubOAuth : OAuthBase
     {
-        public override OAuthProviderConfiguration GetConfiguration()
-        {
-            return OAuthProviderConfiguration.GetConfiguration(OAuthProvider.Github);
-        }
-
         public override OAuth2Client GetClient()
         {
-            var config = GetConfiguration();
+            var config = new OAuthProvider().FindByType(GetType()).Configuration.GetConfiguration<OAuthProviderConfiguration>();
             return new GitHubClient(new RequestFactory(), new OAuth2.Configuration.ClientConfiguration
             {
                 ClientId = config.ClientId.Trim(),

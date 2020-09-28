@@ -7,14 +7,9 @@ namespace TCAdminOAuth.Configurations.OAuths
 {
     public class FacebookOAuth : OAuthBase
     {
-        public override OAuthProviderConfiguration GetConfiguration()
-        {
-            return OAuthProviderConfiguration.GetConfiguration(OAuthProvider.Facebook);
-        }
-
         public override OAuth2Client GetClient()
         {
-            var config = GetConfiguration();
+            var config = new OAuthProvider().FindByType(GetType()).Configuration.GetConfiguration<OAuthProviderConfiguration>();
             return new FacebookClient(new RequestFactory(), new OAuth2.Configuration.ClientConfiguration
             {
                 ClientId = config.ClientId.Trim(),

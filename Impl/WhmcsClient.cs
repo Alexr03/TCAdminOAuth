@@ -12,21 +12,17 @@ namespace TCAdminOAuth.Impl
 {
     public class WhmcsClient : OAuth2Client
     {
-        private readonly OAuthProviderConfiguration _configuration = OAuthProviderConfiguration.GetConfiguration(OAuthProvider.Whmcs);
-        
+        private readonly WhmcsProviderConfiguration _configuration = new OAuthProvider().FindByType(typeof(WhmcsClient))
+            .Configuration.GetConfiguration<WhmcsProviderConfiguration>();
+
         public WhmcsClient(IRequestFactory factory, IClientConfiguration configuration) : base(factory, configuration)
         {
         }
 
         protected override UserInfo ParseUserInfo(string content)
         {
-            Console.WriteLine(content);
             var response = JObject.Parse(content);
-            foreach (var keyValuePair in response)
-            {
-                Console.WriteLine($"{keyValuePair.Key} = {keyValuePair.Value}");
-            }
-            
+
             return new UserInfo
             {
                 Id = response["sub"].Value<string>(),
@@ -39,9 +35,9 @@ namespace TCAdminOAuth.Impl
         protected override void BeforeGetUserInfo(BeforeAfterRequestArgs args)
         {
             args.Request.AddParameter("access_token", AccessToken);
-            var fakeParam = new Parameter { Name = "oauth_token", Value = AccessToken };
-            args.Request.AddParameter(fakeParam);
-            args.Request.Parameters.Remove(fakeParam);
+            args.Request.AddParameter("oauth_token", AccessToken);
+            // Weird workaround for removing a existing param.
+            args.Request.Parameters.RemoveAll(x => x.Name == "oauth_token");
         }
 
         public override string Name => "WHMCS";

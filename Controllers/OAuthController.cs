@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
-using Base;
+using Alexr03.Common.Web.Helpers;
+using Newtonsoft.Json.Linq;
 using OAuth2.Client;
 using OAuth2.Models;
 using TCAdmin.SDK.Objects;
@@ -24,35 +25,32 @@ namespace TCAdminOAuth.Controllers
             new Dictionary<Guid, OAuthRequestState>();
 
         [HttpGet]
-        public ActionResult Edit(OAuthProvider? provider)
+        public ActionResult Edit(int? id)
         {
-            if (!provider.HasValue)
+            if (!id.HasValue)
             {
                 return View("Info");
             }
 
-            var oAuthBase = provider.Value.ToBase();
-            var model = oAuthBase.GetConfiguration();
-            return View(model);
+            var provider = new OAuthProvider(id.Value);
+            var configurationJObject = (JObject)provider.Configuration.GetConfiguration<object>();
+            var o = configurationJObject.ToObject(provider.Configuration.Type);
+            ViewData.TemplateInfo = new TemplateInfo
+            {
+                HtmlFieldPrefix = provider.Configuration.Type.Name,
+            };
+            return View(provider.Configuration.View, o);
         }
 
         [HttpPost]
-        public ActionResult Edit(OAuthProvider provider, OAuthProviderConfiguration model)
+        public ActionResult Edit(int id, FormCollection model)
         {
-            if (model.ClientId.Contains("+"))
-            {
-                Response.StatusCode = 400;
-                return Json(new
-                {
-                    Message = "Please regenerate your OAuth Credentials where 'Client ID' does not contain '+'"
-                });
-            }
-            var config = provider.ToBase().GetConfiguration();
-            config.UpdateWith(model);
-            config.Save();
+            var provider = new OAuthProvider(id);
+            var bindModel = model.Parse(ControllerContext, provider.Configuration.Type);
+            provider.Configuration.SetConfiguration(bindModel);
             return Json(new
             {
-                Message = "OAuth Settings successfully saved."
+                Message = provider.Name + " OAuth Settings successfully saved."
             });
         }
         
@@ -82,8 +80,9 @@ namespace TCAdminOAuth.Controllers
             return Redirect("/AccountSecurity?sso=true");
         }
 
-        public async Task<ActionResult> Login(OAuthProvider provider)
+        public async Task<ActionResult> Login(int id)
         {
+            var provider = new OAuthProvider(id);
             var client = provider.ToClient();
             var guid = Guid.NewGuid();
             var oAuthRequestState = new OAuthRequestState
@@ -133,11 +132,8 @@ namespace TCAdminOAuth.Controllers
                         throw new ArgumentOutOfRangeException();
                 }
             }
-            catch (UnexpectedResponseException ex)
+            catch (UnexpectedResponseException)
             {
-                Console.WriteLine(ex.Response.StatusDescription);
-                Console.WriteLine(ex.Response.ResponseUri);
-                Console.WriteLine(ex.Response.Content);
                 return RedirectWithOAuthError();
             }
             catch (Exception ex)
@@ -181,7 +177,7 @@ namespace TCAdminOAuth.Controllers
         private User GetUserFromUserInfo(UserInfo userInfo)
         {
             var config = GlobalOAuthSettings.GetConfiguration();
-            var provider = userInfo.ProviderName.ParseToProviderEnum();
+            var provider = OAuthProvider.GetByName(userInfo.ProviderName);
             if (TCAdmin.SDK.Objects.User.GetAllUsers(2, true)
                 .FindByCustomField($"OAUTH::{provider}", userInfo.Id) is User userByLink)
             {

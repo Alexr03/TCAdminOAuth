@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Alexr03.Common.TCAdmin.Objects;
 using OAuth2.Client;
 using OAuth2.Models;
+using TCAdmin.Interfaces.Database;
 using TCAdmin.SDK.Mail;
 using TCAdmin.SDK.Objects;
 using TCAdminOAuth.Configurations;
@@ -10,13 +14,33 @@ using TCAdminOAuth.Configurations.OAuths;
 
 namespace TCAdminOAuth.Models
 {
-    public enum OAuthProvider
+    public class OAuthProvider : DynamicTypeBase
     {
-        Whmcs,
-        Discord,
-        Google,
-        Github,
-        Facebook,
+        public OAuthProvider() : base("tcmodule_oauth_providers", Globals.ModuleId)
+        {
+        }
+        
+        public OAuthProvider(int id) : this()
+        {
+            this.SetValue("id", id);
+            this.ValidateKeys();
+            if (!this.Find())
+            {
+                throw new KeyNotFoundException("Cannot find OAuth Provider with ID: " + id);
+            }
+        }
+
+        public static OAuthProvider GetByName(string name)
+        {
+            return GetAll().FirstOrDefault(x => string.Equals(x.Name, name, StringComparison.CurrentCultureIgnoreCase));
+        }
+
+        public static List<OAuthProvider> GetAll()
+        {
+            return new OAuthProvider().GetObjectList(new WhereList()).Cast<OAuthProvider>().ToList();
+        }
+
+        public string Name => this.GetStringValue("name");
     }
 
     public static class OAuthProviderHelper
@@ -24,28 +48,9 @@ namespace TCAdminOAuth.Models
         public static readonly string RedirectUrl =
             new Uri($"{new CompanyInfo().ControlPanelUrl}/OAuth/Callback").ToString();
 
-        public static OAuthProvider ParseToProviderEnum(this string provider)
-        {
-            return (OAuthProvider) Enum.Parse(typeof(OAuthProvider), provider, true);
-        }
-
         public static OAuthBase ToBase(this OAuthProvider oAuthProvider)
         {
-            switch (oAuthProvider)
-            {
-                case OAuthProvider.Google:
-                    return new GoogleOAuth();
-                case OAuthProvider.Whmcs:
-                    return new WhmcsOAuth();
-                case OAuthProvider.Discord:
-                    return new DiscordOAuth();
-                case OAuthProvider.Github:
-                    return new GithubOAuth();
-                case OAuthProvider.Facebook:
-                    return new FacebookOAuth();
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(oAuthProvider), oAuthProvider, null);
-            }
+            return oAuthProvider.Create<OAuthBase>();
         }
 
         public static OAuth2Client ToClient(this OAuthProvider oAuthProvider)
