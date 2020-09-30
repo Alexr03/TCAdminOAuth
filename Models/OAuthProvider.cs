@@ -6,11 +6,14 @@ using System.Web.Mvc;
 using Alexr03.Common.TCAdmin.Objects;
 using OAuth2.Client;
 using OAuth2.Models;
+using TCAdmin.GameHosting.SDK.Objects;
+using TCAdmin.GameHosting.SDK.TeamSpeak;
 using TCAdmin.Interfaces.Database;
 using TCAdmin.SDK.Mail;
 using TCAdmin.SDK.Objects;
 using TCAdminOAuth.Configurations;
 using TCAdminOAuth.Configurations.OAuths;
+using TeamSpeakService = TCAdmin.GameHosting.SDK.Objects.TeamSpeakService;
 
 namespace TCAdminOAuth.Models
 {
@@ -19,7 +22,7 @@ namespace TCAdminOAuth.Models
         public OAuthProvider() : base("tcmodule_oauth_providers", Globals.ModuleId)
         {
         }
-        
+
         public OAuthProvider(int id) : this()
         {
             this.SetValue("id", id);
