@@ -19,7 +19,7 @@ namespace TCAdminOAuth.Models
 {
     public class OAuthProvider : DynamicTypeBase
     {
-        public OAuthProvider() : base("tcmodule_oauth_providers", Globals.ModuleId)
+        public OAuthProvider() : base("tcmodule_oauth_providers")
         {
         }
 

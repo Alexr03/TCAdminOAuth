@@ -1,5 +1,6 @@
 ﻿@using System.Web.Mvc.Ajax
 @using System.Web.Mvc.Html
+@using Alexr03.Common.Web.Helpers
 @using Kendo.Mvc.UI
 @using TCAdmin.SDK.Web.MVC.Extensions
 @using TCAdminOAuth
@@ -8,18 +9,19 @@
 
 @{
     Layout = this.GetTemplateFile("Shared/Main.cshtml", true);
+    var id = int.Parse(Url.RequestContext.RouteData.Values["id"].ToString());
+    var provider = new OAuthProvider(id);
 }
-
 @section sidebar{
     @Html.Action("_DefaultPageIcons", "Base", new { module = Globals.ModuleId, page = 3 })
 }
 
-@using (Ajax.BeginForm("Edit", "OAuth", new AjaxOptions {OnSuccess = "TCAdmin.Ajax.HandleAjaxResult", OnFailure = "onFailure"}))
+@using (Ajax.BeginForm("Edit", "OAuth", new AjaxOptions {OnSuccess = "TCAdmin.Ajax.HandleAjaxResult", OnFailure = "Alexr03.Common.HandleAjaxFailure"}))
 {
     @Html.AntiForgeryToken()
     <div class="primary-toolbar">
         @(Html.Kendo().ToolBar()
-            .Name("generalToolBar")
+            .Name("generalToolBar".Prefix(provider.Id.ToString()))
             .Items(items =>
             {
                 items.Add().Template(this.GetToolbarButton(Resources.Global.Save, "save"));
@@ -30,11 +32,10 @@
     <div class="primary-content">
         <fieldset class="fieldset-form auto-focus">
             @Html.ValidationSummary(true)
-            @Html.Hidden("id", Request["id"])
-            <h2>Edit Settings</h2>
+            @Html.Hidden("id", id)
+            <h2>@provider.Name Settings</h2>
             <ul>
                 <li>
-                    <h3>OAuth Settings</h3>
                     <dl>
                         <dt>@Html.LabelFor(m => m.Enabled)</dt>
                         <dd>@Html.Kendo().SwitchFor(m => m.Enabled)@Html.ValidationMessageFor(m => m.Enabled)@Html.TooltipFor(m => m.Enabled)</dd>
@@ -44,13 +45,13 @@
                         <dd>@Html.Kendo().TextBoxFor(m => m.ClientSecret).HtmlAttributes(new {type = "password"})@Html.ValidationMessageFor(m => m.ClientSecret)@Html.TooltipFor(m => m.ClientSecret)</dd>
                     </dl>
                 </li>
+                <li>
+                    <dl>
+                        <dt>@Html.LabelFor(m => m.AllowEmailAuth)</dt>
+                        <dd>@Html.Kendo().SwitchFor(m => m.AllowEmailAuth)@Html.ValidationMessageFor(m => m.AllowEmailAuth)@Html.TooltipFor(m => m.AllowEmailAuth)</dd>
+                    </dl>
+                </li>
             </ul>
         </fieldset>
     </div>
 }
-
-<script>
-    function onFailure(e){
-        TCAdmin.Ajax.ShowBasicDialog('OAuth Failure', e.responseJSON.Message)
-    }
-</script>

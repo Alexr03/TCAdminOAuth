@@ -33,11 +33,11 @@ namespace TCAdminOAuth.Controllers
             }
 
             var provider = new OAuthProvider(id.Value);
-            var configurationJObject = (JObject)provider.Configuration.GetConfiguration<object>();
+            var configurationJObject = provider.Configuration.Parse<JObject>();
             var o = configurationJObject.ToObject(provider.Configuration.Type);
             ViewData.TemplateInfo = new TemplateInfo
             {
-                HtmlFieldPrefix = provider.Configuration.Type.Name,
+                HtmlFieldPrefix = provider.Id.ToString(),
             };
             return View(provider.Configuration.View, o);
         }
@@ -46,30 +46,13 @@ namespace TCAdminOAuth.Controllers
         public ActionResult Edit(int id, FormCollection model)
         {
             var provider = new OAuthProvider(id);
-            var bindModel = model.Parse(ControllerContext, provider.Configuration.Type);
+            Console.WriteLine("Id: " + id);
+            var bindModel = model.Parse(ControllerContext, provider.Configuration.Type, provider.Id.ToString());
             provider.Configuration.SetConfiguration(bindModel);
             return Json(new
             {
                 Message = provider.Name + " OAuth Settings successfully saved."
             });
-        }
-        
-        [HttpGet]
-        [ParentAction("Edit")]
-        public ActionResult OAuthSettings()
-        {
-            var config = GlobalOAuthSettings.GetConfiguration();
-            return View("OAuthSettings", config);
-        }
-
-        [HttpPost]
-        [ParentAction("Edit")]
-        public ActionResult OAuthSettings(GlobalOAuthSettings model)
-        {
-            var config = GlobalOAuthSettings.GetConfiguration();
-            config.UpdateWith(model);
-            config.Save();
-            return View(config);
         }
 
         [HttpGet]
@@ -176,7 +159,6 @@ namespace TCAdminOAuth.Controllers
 
         private User GetUserFromUserInfo(UserInfo userInfo)
         {
-            var config = GlobalOAuthSettings.GetConfiguration();
             var provider = OAuthProvider.GetByName(userInfo.ProviderName);
             if (TCAdmin.SDK.Objects.User.GetAllUsers(2, true)
                 .FindByCustomField($"OAUTH::{provider}", userInfo.Id) is User userByLink)
@@ -184,7 +166,7 @@ namespace TCAdminOAuth.Controllers
                 return userByLink;
             }
 
-            if (config.EnableEmailAuth)
+            if (provider.Configuration.Parse<OAuthProviderConfiguration>().AllowEmailAuth)
             {
                 var users = TCAdmin.SDK.Objects.User.GetUsersByEmail(userInfo.Email).Cast<User>().ToList();
                 switch (users.Count)

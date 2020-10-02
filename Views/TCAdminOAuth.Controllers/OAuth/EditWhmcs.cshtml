@@ -8,10 +8,12 @@
 
 @{
     Layout = this.GetTemplateFile("Shared/Main.cshtml", true);
+    var id = int.Parse(Url.RequestContext.RouteData.Values["id"].ToString());
+    var provider = new OAuthProvider(id);
 }
 
 @section sidebar{
-    @Html.Action("_DefaultPageIcons", "Base", new {module = Globals.ModuleId, page = 3})
+    @Html.Partial("_DefaultSidebar")
 }
 
 @using (Ajax.BeginForm("Edit", "OAuth", new AjaxOptions {OnSuccess = "TCAdmin.Ajax.HandleAjaxResult", OnFailure = "onFailure"}))
@@ -31,10 +33,9 @@
         <fieldset class="fieldset-form auto-focus">
             @Html.ValidationSummary(true)
             @Html.Hidden("id", Request["id"])
-            <h2>Edit Settings</h2>
+            <h2>@provider.Name Settings</h2>
             <ul>
                 <li>
-                    <h3>OAuth Settings</h3>
                     <dl>
                         <dt>@Html.LabelFor(m => m.Enabled)</dt>
                         <dd>@Html.Kendo().SwitchFor(m => m.Enabled)@Html.ValidationMessageFor(m => m.Enabled)@Html.TooltipFor(m => m.Enabled)</dd>
@@ -42,6 +43,12 @@
                         <dd>@Html.Kendo().TextBoxFor(m => m.ClientId)@Html.ValidationMessageFor(m => m.ClientId)@Html.TooltipFor(m => m.ClientId)</dd>
                         <dt>@Html.LabelFor(m => m.ClientSecret)</dt>
                         <dd>@Html.Kendo().TextBoxFor(m => m.ClientSecret).HtmlAttributes(new {type = "password"})@Html.ValidationMessageFor(m => m.ClientSecret)@Html.TooltipFor(m => m.ClientSecret)</dd>
+                    </dl>
+                </li>
+                <li>
+                    <dl>
+                        <dt>@Html.LabelFor(m => m.AllowEmailAuth)</dt>
+                        <dd>@Html.Kendo().SwitchFor(m => m.AllowEmailAuth)@Html.ValidationMessageFor(m => m.AllowEmailAuth)@Html.TooltipFor(m => m.AllowEmailAuth)</dd>
                     </dl>
                 </li>
                 <li>

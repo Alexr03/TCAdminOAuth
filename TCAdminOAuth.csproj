@@ -193,7 +193,6 @@
       <None Include="packages.config" />
     </ItemGroup>
     <ItemGroup>
-      <Compile Include="Configurations\GlobalOAuthSettings.cs" />
       <Compile Include="Configurations\OAuthBase.cs" />
       <Compile Include="Configurations\OAuthProviderConfiguration.cs" />
       <Compile Include="Configurations\OAuths\DiscordOAuth.cs" />
@@ -230,7 +229,6 @@
       <Content Include="Views\TCAdminOAuth.Controllers\OAuth\Edit.cshtml" />
       <Content Include="Views\TCAdminOAuth.Controllers\OAuth\EditWhmcs.cshtml" />
       <Content Include="Views\TCAdminOAuth.Controllers\OAuth\Info.cshtml" />
-      <Content Include="Views\TCAdminOAuth.Controllers\OAuth\OAuthSettings.cshtml" />
     </ItemGroup>
     <ItemGroup>
       <Analyzer Include="..\packages\MappingGenerator.1.17.437\analyzers\dotnet\cs\MappingGenerator.dll" />

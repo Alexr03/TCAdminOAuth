@@ -1,4 +1,5 @@
-﻿using OAuth2.Client;
+﻿using Alexr03.Common.TCAdmin.Objects;
+using OAuth2.Client;
 using OAuth2.Client.Impl;
 using OAuth2.Infrastructure;
 using TCAdminOAuth.Models;
@@ -9,7 +10,7 @@ namespace TCAdminOAuth.Configurations.OAuths
     {
         public override OAuth2Client GetClient()
         {
-            var config = new OAuthProvider().FindByType(GetType()).Configuration.GetConfiguration<OAuthProviderConfiguration>();
+            var config = DynamicTypeBase.FindByType(Globals.TableName, GetType()).Configuration.Parse<OAuthProviderConfiguration>();
             return new FacebookClient(new RequestFactory(), new OAuth2.Configuration.ClientConfiguration
             {
                 ClientId = config.ClientId.Trim(),

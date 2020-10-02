@@ -6,7 +6,7 @@
 }
 
 <div class="cards-container">
-    @foreach (var provider in OAuthProvider.GetAll().Where(provider => provider.Configuration.GetConfiguration<OAuthProviderConfiguration>().Enabled))
+    @foreach (var provider in OAuthProvider.GetAll().Where(provider => provider.Configuration.Parse<OAuthProviderConfiguration>().Enabled))
     {
         <div class="k-card">
             <div class="k-card-header">

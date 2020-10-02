@@ -1,4 +1,5 @@
 ﻿using System;
+using Alexr03.Common.TCAdmin.Objects;
 using Newtonsoft.Json.Linq;
 using OAuth2.Client;
 using OAuth2.Configuration;
@@ -12,8 +13,8 @@ namespace TCAdminOAuth.Impl
 {
     public class WhmcsClient : OAuth2Client
     {
-        private readonly WhmcsProviderConfiguration _configuration = new OAuthProvider().FindByType(typeof(WhmcsClient))
-            .Configuration.GetConfiguration<WhmcsProviderConfiguration>();
+        private readonly WhmcsProviderConfiguration _configuration = DynamicTypeBase.FindByType(Globals.TableName, typeof(WhmcsClient))
+            .Configuration.Parse<WhmcsProviderConfiguration>();
 
         public WhmcsClient(IRequestFactory factory, IClientConfiguration configuration) : base(factory, configuration)
         {

@@ -12,12 +12,10 @@ namespace TCAdminOAuth.Configurations
 
         [Display(Name = "Client Secret", Description = "The Client Secret you get from the provider.")]
         public string ClientSecret { get; set; } = "";
-
-        public void UpdateWith(OAuthProviderConfiguration model)
-        {
-            Enabled = model.Enabled;
-            ClientId = model.ClientId;
-            ClientSecret = model.ClientSecret;
-        }
+        
+        [Display(Name = "Allow Email Authentication",
+            Description =
+                "Enabling this will allow users to login to a TCAdmin account that matches their OAuth Email without linking it. This is potentially dangerous.")]
+        public bool AllowEmailAuth { get; set; } = false;
     }
 }
