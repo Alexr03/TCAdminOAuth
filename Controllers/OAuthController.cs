@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
+using Alexr03.Common.TCAdmin.Extensions;
+using Alexr03.Common.TCAdmin.Web.Binders;
 using Alexr03.Common.Web.Helpers;
 using Newtonsoft.Json.Linq;
 using OAuth2.Client;
@@ -25,30 +27,20 @@ namespace TCAdminOAuth.Controllers
             new Dictionary<Guid, OAuthRequestState>();
 
         [HttpGet]
-        public ActionResult Edit(int? id)
+        public ActionResult Edit([DynamicTypeBaseBinder] OAuthProvider provider)
         {
-            if (!id.HasValue)
+            if (provider == null)
             {
                 return View("Info");
             }
 
-            var provider = new OAuthProvider(id.Value);
-            var configurationJObject = provider.Configuration.Parse<JObject>();
-            var o = configurationJObject.ToObject(provider.Configuration.Type);
-            ViewData.TemplateInfo = new TemplateInfo
-            {
-                HtmlFieldPrefix = provider.Id.ToString(),
-            };
-            return View(provider.Configuration.View, o);
+            return provider.GetActionResultView(this);
         }
 
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection model)
+        public ActionResult Edit([DynamicTypeBaseBinder] OAuthProvider provider, FormCollection model)
         {
-            var provider = new OAuthProvider(id);
-            Console.WriteLine("Id: " + id);
-            var bindModel = model.Parse(ControllerContext, provider.Configuration.Type, provider.Id.ToString());
-            provider.Configuration.SetConfiguration(bindModel);
+            provider.UpdateFromCollection(model, ControllerContext);
             return Json(new
             {
                 Message = provider.Name + " OAuth Settings successfully saved."
@@ -63,9 +55,8 @@ namespace TCAdminOAuth.Controllers
             return Redirect("/AccountSecurity?sso=true");
         }
 
-        public async Task<ActionResult> Login(int id)
+        public async Task<ActionResult> Login([DynamicTypeBaseBinder] OAuthProvider provider)
         {
-            var provider = new OAuthProvider(id);
             var client = provider.ToClient();
             var guid = Guid.NewGuid();
             var oAuthRequestState = new OAuthRequestState
