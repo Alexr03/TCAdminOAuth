@@ -33,13 +33,13 @@ namespace TCAdminOAuth.Controllers
                 return View("Info");
             }
 
-            return provider.GetActionResultView(this);
+            return provider.GetConfigurationResultView(this);
         }
 
         [HttpPost]
         public ActionResult Edit([DynamicTypeBaseBinder] OAuthProvider provider, FormCollection model)
         {
-            provider.UpdateFromCollection(model, ControllerContext);
+            provider.UpdateConfigurationFromCollection(model, ControllerContext);
             return Json(new
             {
                 Message = provider.Name + " OAuth Settings successfully saved."
