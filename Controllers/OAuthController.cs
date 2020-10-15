@@ -62,6 +62,7 @@ namespace TCAdminOAuth.Controllers
             using (var securityBypass = new SecurityBypass(true))
             {
                 var provider = DynamicTypeBase.GetCurrent<OAuthProvider>();
+                Console.WriteLine(provider.GetType());
                 var guid = Guid.NewGuid();
                 var oAuthRequestState = new OAuthRequestState
                 {

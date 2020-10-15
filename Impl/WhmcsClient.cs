@@ -1,5 +1,6 @@
 ﻿using System;
 using Alexr03.Common.TCAdmin.Objects;
+using Alexr03.Common.TCAdmin.Permissions;
 using Newtonsoft.Json.Linq;
 using OAuth2.Client;
 using OAuth2.Configuration;
@@ -13,8 +14,17 @@ namespace TCAdminOAuth.Impl
 {
     public class WhmcsClient : OAuth2Client
     {
-        private readonly WhmcsProviderConfiguration _configuration = DynamicTypeBase.FindByType(Globals.TableName, typeof(WhmcsClient))
-            .Configuration.Parse<WhmcsProviderConfiguration>();
+        private static WhmcsProviderConfiguration _configuration
+        {
+            get
+            {
+                using (var securityBypass = new SecurityBypass(true))
+                {
+                    return DynamicTypeBase.GetCurrent<OAuthProvider>().Configuration
+                        .Parse<WhmcsProviderConfiguration>();
+                }
+            }
+        }
 
         public WhmcsClient(IRequestFactory factory, IClientConfiguration configuration) : base(factory, configuration)
         {

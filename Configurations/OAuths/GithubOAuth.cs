@@ -10,7 +10,7 @@ namespace TCAdminOAuth.Configurations.OAuths
     {
         public override OAuth2Client GetClient()
         {
-            var config = DynamicTypeBase.FindByType(Globals.TableName, GetType()).Configuration.Parse<OAuthProviderConfiguration>();
+            var config = DynamicTypeBase.GetCurrent<OAuthProvider>().Configuration.Parse<OAuthProviderConfiguration>();
             return new GitHubClient(new RequestFactory(), new OAuth2.Configuration.ClientConfiguration
             {
                 ClientId = config.ClientId.Trim(),
