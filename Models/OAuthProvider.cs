@@ -62,12 +62,16 @@ namespace TCAdminOAuth.Models
 
         public static OAuthBase ToBase(this OAuthProvider oAuthProvider)
         {
-            return oAuthProvider.Create<OAuthBase>();
+            var oAuthBase = oAuthProvider.Create<OAuthBase>();
+            return oAuthBase;
         }
 
         public static OAuth2Client ToClient(this OAuthProvider oAuthProvider)
         {
-            return oAuthProvider.ToBase().GetClient();
+            using (var securityBypass = new SecurityBypass(true))
+            {
+                return oAuthProvider.ToBase().GetClient();
+            }
         }
 
         public static void SyncCurrentUser(this OAuthProvider oAuthProvider, UserInfo userInfo)

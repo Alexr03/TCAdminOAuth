@@ -8,6 +8,8 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using Alexr03.Common.TCAdmin.Extensions;
+using Alexr03.Common.TCAdmin.Objects;
+using Alexr03.Common.TCAdmin.Permissions;
 using Alexr03.Common.TCAdmin.Web.Binders;
 using Newtonsoft.Json.Linq;
 using OAuth2.Client;
@@ -37,8 +39,9 @@ namespace TCAdminOAuth.Controllers
         }
 
         [HttpPost]
-        public ActionResult Edit([DynamicTypeBaseBinder] OAuthProvider provider, FormCollection model)
+        public ActionResult Edit(int id, FormCollection model)
         {
+            var provider = DynamicTypeBase.GetCurrent<OAuthProvider>();
             provider.UpdateConfigurationFromCollection(model, ControllerContext);
             return Json(new
             {
@@ -54,22 +57,25 @@ namespace TCAdminOAuth.Controllers
             return Redirect("/AccountSecurity?sso=true");
         }
 
-        public async Task<ActionResult> Login([DynamicTypeBaseBinder] OAuthProvider provider)
+        public async Task<ActionResult> Login(int id)
         {
-            var client = provider.ToClient();
-            var guid = Guid.NewGuid();
-            var oAuthRequestState = new OAuthRequestState
+            using (var securityBypass = new SecurityBypass(true))
             {
-                Provider = provider,
-                RequestLoginState = TCAdmin.SDK.Session.IsAuthenticated()
-                    ? OAuthRequestLoginState.Link
-                    : OAuthRequestLoginState.Login,
-                UserId = TCAdmin.SDK.Session.IsAuthenticated() ? TCAdmin.SDK.Session.GetCurrentUser().UserId : -1
-            };
-            OAuthRequests.Add(guid, oAuthRequestState);
+                var provider = DynamicTypeBase.GetCurrent<OAuthProvider>();
+                var guid = Guid.NewGuid();
+                var oAuthRequestState = new OAuthRequestState
+                {
+                    Provider = provider,
+                    RequestLoginState = TCAdmin.SDK.Session.IsAuthenticated()
+                        ? OAuthRequestLoginState.Link
+                        : OAuthRequestLoginState.Login,
+                    UserId = TCAdmin.SDK.Session.IsAuthenticated() ? TCAdmin.SDK.Session.GetCurrentUser().UserId : -1
+                };
+                OAuthRequests.Add(guid, oAuthRequestState);
             
-            var redirectUri = new Uri(await client.GetLoginLinkUriAsync(guid.ToString()));
-            return Redirect(redirectUri.ToString());
+                var redirectUri = new Uri(await provider.ToClient().GetLoginLinkUriAsync(guid.ToString()));
+                return Redirect(redirectUri.ToString());
+            }
         }
 
         public async Task<ActionResult> Callback()
@@ -129,7 +135,7 @@ namespace TCAdminOAuth.Controllers
                 return false;
             }
 
-            var cookie = FormsAuthentication.GetAuthCookie(user.UserId.ToString(), false);
+            var cookie = FormsAuthentication.GetAuthCookie(user.UserId.ToString(), true);
             var cookieData = new FormsAuthenticationCookieData
             {
                 ["lastlogdate"] = user.LastLoginUtc.ToString(CultureInfo.InvariantCulture),
@@ -155,6 +161,7 @@ namespace TCAdminOAuth.Controllers
             {
                 return userByLink;
             }
+
 
             if (provider.Configuration.Parse<OAuthProviderConfiguration>().AllowEmailAuth)
             {

@@ -26,7 +26,7 @@
         ObjectBase.GlobalSkipSecurityCheck = true;
         foreach (var provider in OAuthProvider.GetAll().Where(provider => provider.Configuration.Parse<OAuthProviderConfiguration>().Enabled))
         {
-            <a href="/OAuth/Login?provider=@provider.Name">
+            <a href="/OAuth/Login/@provider.Id">
                 <img src="/Views/Default/TCAdminOAuth.Controllers/Images/@(provider.Name.ToLower())_signin.png" width="190px" alt="Login with @provider">
             </a>
         }
