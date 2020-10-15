@@ -2,7 +2,7 @@
                         security_class)
 VALUES ('57d6df06-41b6-4b76-800c-e446eed1bbad', 'OAuth Authentication', '2.0', 1, null, null, null);
 
-# ----------------------------------------------------------------------------------------------------------------------
+-- ----------------------------------------------------------------------------------------------------------------------
 
 INSERT INTO tc_site_map (page_id, module_id, parent_page_id, parent_page_module_id, category_id, url, mvc_url,
                          controller, action, display_name, page_small_icon, panelbar_icon, show_in_sidebar,
@@ -28,7 +28,7 @@ VALUES (3, '57d6df06-41b6-4b76-800c-e446eed1bbad', 40, '07405876-e8c2-4b24-a774-
 ({57d6df06-41b6-4b76-800c-e446eed1bbad,1,0})
 ', null, null, '');
 
-# ----------------------------------------------------------------------------------------------------------------------
+-- ---------------------------------------------------------------------------------------------------------------------
 
 INSERT INTO tc_page_icons (icon_id, module_id, page_id, linked_page_id, linked_page_module_id, display_name,
                            description, icon, url, display_sql, user_type, selected_user_type, view_order,
@@ -73,21 +73,83 @@ VALUES (7, '57d6df06-41b6-4b76-800c-e446eed1bbad', 3, 3, '57d6df06-41b6-4b76-800
         'Modify OAuth Settings', 'MenuIcons/Base/ServerNetwork.png', '/OAuth/OAuthSettings', null, 0, null, 2, 1, null,
         null, null, null);
 
-# ----------------------------------------------------------------------------------------------------------------------
+-- ---------------------------------------------------------------------------------------------------------------------
 
 INSERT INTO tc_panelbar_categories (category_id, module_id, display_name, view_order, parent_category_id,
                                     parent_module_id, page_id, panelbar_icon)
 VALUES (1, '57d6df06-41b6-4b76-800c-e446eed1bbad', 'OAuth', 1002, 6, '07405876-e8c2-4b24-a774-4ef57f596384', null,
         null);
 
-# ----------------------------------------------------------------------------------------------------------------------
+-- ---------------------------------------------------------------------------------------------------------------------
 
 INSERT INTO tc_permission_categories (category_id, module_id, parent_category_id, parent_module_id, display_name,
                                       view_order)
 VALUES (1, '57d6df06-41b6-4b76-800c-e446eed1bbad', null, null, 'OAuth Credentials', 1060);
 
-# ----------------------------------------------------------------------------------------------------------------------
+-- ---------------------------------------------------------------------------------------------------------------------
 
 INSERT INTO tc_permissions (permission_id, module_id, category_id, display_name, permission_type, view_order,
-                                    role_owner_required_permissions, same_role_required_permissions, top_level_only)
+                            role_owner_required_permissions, same_role_required_permissions, top_level_only)
 VALUES (1, '57d6df06-41b6-4b76-800c-e446eed1bbad', 1, 'Modify OAuth Credentials', 1, 1000, '', null, 1);
+
+-- ---------------------------------------------------------------------------------------------------------------------
+
+create table tcmodule_oauth_providers
+(
+    id                    int auto_increment
+        primary key,
+    name                  text        null,
+    typeName              text        null,
+    configurationModuleId varchar(36) not null,
+    configurationId       int         null,
+    app_data              text        null
+);
+
+INSERT INTO tcmodule_oauth_providers (id, name, typeName, configurationModuleId, configurationId, app_data)
+VALUES (1, 'Google', 'TCAdminOAuth.Configurations.OAuths.GoogleOAuth, TCAdminOAuth',
+        '57d6df06-41b6-4b76-800c-e446eed1bbad', 1, '');
+INSERT INTO tcmodule_oauth_providers (id, name, typeName, configurationModuleId, configurationId, app_data)
+VALUES (2, 'Whmcs', 'TCAdminOAuth.Configurations.OAuths.WhmcsOAuth, TCAdminOAuth',
+        '57d6df06-41b6-4b76-800c-e446eed1bbad', 2, '');
+INSERT INTO tcmodule_oauth_providers (id, name, typeName, configurationModuleId, configurationId, app_data)
+VALUES (3, 'Discord', 'TCAdminOAuth.Configurations.OAuths.DiscordOAuth, TCAdminOAuth',
+        '57d6df06-41b6-4b76-800c-e446eed1bbad', 3, '');
+INSERT INTO tcmodule_oauth_providers (id, name, typeName, configurationModuleId, configurationId, app_data)
+VALUES (4, 'Github', 'TCAdminOAuth.Configurations.OAuths.GithubOAuth, TCAdminOAuth',
+        '57d6df06-41b6-4b76-800c-e446eed1bbad', 4, '');
+INSERT INTO tcmodule_oauth_providers (id, name, typeName, configurationModuleId, configurationId, app_data)
+VALUES (5, 'Facebook', 'TCAdminOAuth.Configurations.OAuths.FacebookOAuth, TCAdminOAuth',
+        '57d6df06-41b6-4b76-800c-e446eed1bbad', 5, '');
+
+-- ---------------------------------------------------------------------------------------------------------------------
+
+INSERT INTO ar_common_configurations (id, moduleId, name, typeName, contents, app_data)
+VALUES (1, '57d6df06-41b6-4b76-800c-e446eed1bbad', 'GoogleProviderConfiguration',
+        'TCAdminOAuth.Configurations.OAuthProviderConfiguration, TCAdminOAuth', '{}', '<?xml version="1.0" encoding="utf-16" standalone="yes"?>
+<values>
+  <add key="AR_COMMON:ConfigurationView" value="Edit" type="System.String,mscorlib" />
+</values>');
+INSERT INTO ar_common_configurations (id, moduleId, name, typeName, contents, app_data)
+VALUES (2, '57d6df06-41b6-4b76-800c-e446eed1bbad', 'WhmcsProviderConfiguration',
+        'TCAdminOAuth.Configurations.WhmcsProviderConfiguration, TCAdminOAuth', '{}', '<?xml version="1.0" encoding="utf-16" standalone="yes"?>
+<values>
+  <add key="AR_COMMON:ConfigurationView" value="EditWhmcs" type="System.String,mscorlib" />
+</values>');
+INSERT INTO ar_common_configurations (id, moduleId, name, typeName, contents, app_data)
+VALUES (3, '57d6df06-41b6-4b76-800c-e446eed1bbad', 'DiscordProviderConfiguration',
+        'TCAdminOAuth.Configurations.OAuthProviderConfiguration, TCAdminOAuth', '{}', '<?xml version="1.0" encoding="utf-16" standalone="yes"?>
+<values>
+  <add key="AR_COMMON:ConfigurationView" value="Edit" type="System.String,mscorlib" />
+</values>');
+INSERT INTO ar_common_configurations (id, moduleId, name, typeName, contents, app_data)
+VALUES (4, '57d6df06-41b6-4b76-800c-e446eed1bbad', 'GithubProviderConfiguration',
+        'TCAdminOAuth.Configurations.OAuthProviderConfiguration, TCAdminOAuth', '{}', '<?xml version="1.0" encoding="utf-16" standalone="yes"?>
+<values>
+  <add key="AR_COMMON:ConfigurationView" value="Edit" type="System.String,mscorlib" />
+</values>');
+INSERT INTO ar_common_configurations (id, moduleId, name, typeName, contents, app_data)
+VALUES (5, '57d6df06-41b6-4b76-800c-e446eed1bbad', 'FacebookProviderConfiguration',
+        'TCAdminOAuth.Configurations.OAuthProviderConfiguration, TCAdminOAuth', '{}', '<?xml version="1.0" encoding="utf-16" standalone="yes"?>
+<values>
+  <add key="AR_COMMON:ConfigurationView" value="Edit" type="System.String,mscorlib" />
+</values>');

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Alexr03.Common.TCAdmin.Objects;
+using Alexr03.Common.TCAdmin.Permissions;
 using OAuth2.Client;
 using OAuth2.Models;
 using TCAdmin.GameHosting.SDK.Objects;
@@ -48,8 +49,16 @@ namespace TCAdminOAuth.Models
 
     public static class OAuthProviderHelper
     {
-        public static readonly string RedirectUrl =
-            new Uri($"{new CompanyInfo().ControlPanelUrl}/OAuth/Callback").ToString();
+        public static string RedirectUrl
+        {
+            get
+            {
+                using (var securityBypass = new SecurityBypass(true))
+                {
+                    return new Uri($"{new CompanyInfo().ControlPanelUrl}/OAuth/Callback").ToString();
+                }
+            }
+        }
 
         public static OAuthBase ToBase(this OAuthProvider oAuthProvider)
         {
