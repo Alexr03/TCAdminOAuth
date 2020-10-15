@@ -139,8 +139,8 @@ namespace TCAdminOAuth.Controllers
             };
 
             var oldTicket = FormsAuthentication.Decrypt(cookie.Value);
-            var newTicket = new FormsAuthenticationTicket(oldTicket.Version, oldTicket.Name, oldTicket.IssueDate,
-                oldTicket.Expiration.AddDays(10), oldTicket.IsPersistent, cookieData.ToString());
+            var newTicket = new FormsAuthenticationTicket(oldTicket.Version, oldTicket.Name, DateTime.Now,
+                oldTicket.Expiration.AddDays(30), true, cookieData.ToString());
             cookie.Value = FormsAuthentication.Encrypt(newTicket);
             HttpContext.Response.Cookies.Add(cookie);
 
