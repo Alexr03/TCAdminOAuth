@@ -10,7 +10,7 @@ namespace TCAdminOAuth.Configurations.OAuths
     {
         public override OAuth2Client GetClient()
         {
-            var config = DynamicTypeBase.GetCurrent<OAuthProvider>().Configuration.Parse<OAuthProviderConfiguration>();
+            var config = OAuthProvider.GetByName("Whmcs").Configuration.Parse<OAuthProviderConfiguration>();
             return new WhmcsClient(new RequestFactory(), new OAuth2.Configuration.ClientConfiguration
             {
                 ClientId = config.ClientId.Trim(),

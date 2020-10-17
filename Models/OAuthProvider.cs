@@ -71,7 +71,6 @@ namespace TCAdminOAuth.Models
             using (var securityBypass = new SecurityBypass(true))
             {
                 var oAuthBase = oAuthProvider.ToBase();
-                Console.WriteLine("t - " + oAuthBase.GetType());
                 return oAuthBase.GetClient();
             }
         }
