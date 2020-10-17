@@ -107,7 +107,7 @@ namespace TCAdminOAuth.Models
 
         public static bool UserIsSynced(this OAuthProvider oAuthProvider, User user)
         {
-            return user.AppData[$"OAUTH::{oAuthProvider}"] != null && user.AppData.HasValue($"OAUTH::{oAuthProvider}");
+            return user.AppData[$"OAUTH::{oAuthProvider.Name}"] != null && user.AppData.HasValue($"OAUTH::{oAuthProvider.Name}");
         }
     }
 }
