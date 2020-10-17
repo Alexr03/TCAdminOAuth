@@ -83,7 +83,7 @@ namespace TCAdminOAuth.Models
 
         public static void SyncUser(this OAuthProvider oAuthProvider, UserInfo userInfo, User user)
         {
-            user.CustomFields[$"OAUTH::{oAuthProvider}"] = userInfo.Id;
+            user.CustomFields[$"OAUTH::{oAuthProvider.Name}"] = userInfo.Id;
             user.Save();
         }
 
@@ -95,7 +95,7 @@ namespace TCAdminOAuth.Models
 
         public static void UnSyncUser(this OAuthProvider oAuthProvider, User user)
         {
-            user.AppData.RemoveValue($"OAUTH::{oAuthProvider}");
+            user.AppData.RemoveValue($"OAUTH::{oAuthProvider.Name}");
             user.Save();
         }
 
