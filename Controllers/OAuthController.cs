@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
+using Alexr03.Common.Logging;
 using Alexr03.Common.TCAdmin.Extensions;
 using Alexr03.Common.TCAdmin.Objects;
 using Alexr03.Common.TCAdmin.Permissions;
@@ -112,8 +113,9 @@ namespace TCAdminOAuth.Controllers
                         throw new ArgumentOutOfRangeException();
                 }
             }
-            catch (UnexpectedResponseException)
+            catch (UnexpectedResponseException e)
             {
+                SetOAuthError($"Unexpected Response: {e.FieldName} || {e.Response.Content}");
                 return RedirectWithOAuthError();
             }
             catch (Exception ex)
@@ -190,6 +192,7 @@ namespace TCAdminOAuth.Controllers
         private ActionResult RedirectWithOAuthError()
         {
             var queryString = HttpUtility.ParseQueryString(string.Empty);
+            if (TempData?["OAuthError"] == null) return Redirect("/Login");
             queryString.Add("OAuthError", TempData["OAuthError"].ToString());
 
             return Redirect("/Login?" + queryString);
@@ -197,6 +200,8 @@ namespace TCAdminOAuth.Controllers
 
         private void SetOAuthError(string error)
         {
+            var logger = Logger.Create<OAuthController>(nameof(SetOAuthError));
+            logger.Information("OAuth Error: " + error);
             TempData["OAuthError"] = error;
         }
     }

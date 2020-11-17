@@ -55,7 +55,7 @@ namespace TCAdminOAuth.Models
             {
                 using (var securityBypass = new SecurityBypass(true))
                 {
-                    return new Uri($"{new CompanyInfo().ControlPanelUrl}/OAuth/Callback").ToString();
+                    return new Uri($"{new CompanyInfo(1).ControlPanelUrl}/OAuth/Callback").ToString();
                 }
             }
         }
